@@ -1,0 +1,173 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// Database connection
+$host = 'localhost';  // Database host
+$dbname = 'jbjowgdc_arthajewels';  // Database name
+$username = 'jbjowgdc_arthajewels';  // Database username
+$password = 'Y5TthT0ZD%F%';  // Database password
+
+// Create PDO connection
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Could not connect to the database: " . $e->getMessage());
+}
+
+// Function to upload CSV and process it
+function uploadCsvAndUpdateImages($csvFile) {
+    global $pdo;
+    $results = []; // This will store the results for display after processing the CSV file
+
+    // Open CSV file
+    if (($handle = fopen($csvFile, 'r')) !== false) {
+        // Skip the header row (if present)
+        fgetcsv($handle);
+
+        // Prepare SQL for checking and updating products
+        $updateStmt = $pdo->prepare("
+            UPDATE products
+            SET image = CASE WHEN :image <> '' THEN :image ELSE image END,
+                other_image_url1 = CASE WHEN :other_image_url1 <> '' THEN :other_image_url1 ELSE other_image_url1 END,
+                other_image_url2 = CASE WHEN :other_image_url2 <> '' THEN :other_image_url2 ELSE other_image_url2 END,
+                other_image_url3 = CASE WHEN :other_image_url3 <> '' THEN :other_image_url3 ELSE other_image_url3 END
+            WHERE sku = :sku
+        ");
+
+        // Process each row in the CSV
+        while (($row = fgetcsv($handle)) !== false) {
+            // Assuming the CSV has the following columns:
+            // SKU, Image URL, Other Image URL 1, Other Image URL 2, Other Image URL 3, Other Image URL 4
+            $sku = $row[0];
+            $image = $row[1];
+            $other_image_url1 = $row[2];
+            $other_image_url2 = $row[3];
+            $other_image_url3 = $row[4];
+
+            // Check if the SKU exists in the database
+            $checkStmt = $pdo->prepare("SELECT 1 FROM products WHERE sku = :sku");
+            $checkStmt->execute(['sku' => $sku]);
+
+            if ($checkStmt->fetchColumn()) {
+                // Update the product image URLs if SKU exists, only update non-empty URLs
+                $updateStmt->execute([
+                    'sku' => $sku,
+                    'image' => $image,
+                    'other_image_url1' => $other_image_url1,
+                    'other_image_url2' => $other_image_url2,
+                    'other_image_url3' => $other_image_url3,
+                ]);
+                $results[] = [
+                    'sku' => $sku,
+                    'status' => 'Updated',
+                    'image' => $image ? $image : 'No change',
+                    'other_image_url1' => $other_image_url1 ? $other_image_url1 : 'No change',
+                    'other_image_url2' => $other_image_url2 ? $other_image_url2 : 'No change',
+                    'other_image_url3' => $other_image_url3 ? $other_image_url3 : 'No change',
+                ];
+            } else {
+                // SKU not found
+                $results[] = [
+                    'sku' => $sku,
+                    'status' => 'SKU not found',
+                    'image' => 'N/A',
+                    'other_image_url1' => 'N/A',
+                    'other_image_url2' => 'N/A',
+                    'other_image_url3' => 'N/A',
+                ];
+            }
+        }
+
+        // Close the file
+        fclose($handle);
+    } else {
+        echo "Failed to open the CSV file.";
+    }
+
+    return $results; // Return the results to be displayed
+}
+
+// Check if the form was submitted and process the CSV
+$results = [];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csv_file'])) {
+    $fileTmpPath = $_FILES['csv_file']['tmp_name'];
+    $fileName = $_FILES['csv_file']['name'];
+    $fileSize = $_FILES['csv_file']['size'];
+    $fileType = $_FILES['csv_file']['type'];
+    $fileNameCmps = explode('.', $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+
+    // Check if the file is a CSV
+    if ($fileExtension === 'csv') {
+        // Upload CSV and update products
+        $results = uploadCsvAndUpdateImages($fileTmpPath);
+    } else {
+        echo "Please upload a valid CSV file.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV and Update Product Images</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Upload CSV to Update Product Images</h2>
+    <form action="" method="POST" enctype="multipart/form-data">
+        <label for="csv_file">Select CSV file:</label>
+        <input type="file" name="csv_file" id="csv_file" required>
+        <button type="submit">Upload and Update</button>
+    </form>
+
+    <?php if (!empty($results)): ?>
+        <h3>Update Results</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Status</th>
+                    <th>Main Image</th>
+                    <th>Other Image URL 1</th>
+                    <th>Other Image URL 2</th>
+                    <th>Other Image URL 3</th>
+                    <th>Other Image URL 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($results as $result): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($result['sku']); ?></td>
+                        <td><?php echo htmlspecialchars($result['status']); ?></td>
+                        <td><?php echo htmlspecialchars($result['image']); ?></td>
+                        <td><?php echo htmlspecialchars($result['other_image_url1']); ?></td>
+                        <td><?php echo htmlspecialchars($result['other_image_url2']); ?></td>
+                        <td><?php echo htmlspecialchars($result['other_image_url3']); ?></td>
+                        <td><?php echo htmlspecialchars($result['other_image_url4']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</body>
+</html>

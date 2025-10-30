@@ -1,0 +1,106 @@
+@extends('frontend.layouts.app')
+
+@section('content')
+<section class="product_detailing">
+    <div class="container">
+        <div class="product_detailing_outer">
+            <div class="product_detail_left">
+                
+                
+                <?php
+                    if (substr($product->image, 0, 7) == "http://" || substr($product->image, 0, 8) == "https://") {
+                        $product_image = $product->image;
+                    }else{
+                        $product_image = URL::asset('products/'.$product->image);
+                    }
+                ?>
+                <div class="d-none product-img--main" data-scale="1.6" data-image="{{$product_image}}"></div>
+                
+                <div class="product-img--main-inner">
+                    <img src="{{$product_image}}">
+                </div>
+                
+                
+            </div>
+            <div class="product_detail_right">
+                <h2>{{$product->name}}</h2>
+                <div class="product_detail_right_inr">
+                    <h3>€ {{$product->price}}.00</h3>
+                    <div>{{$product->long_description}}</div>
+                    @if(!blank($product->long_description2))
+                        @php
+                            // Define replacements
+                            $replacements = [
+                                'E:' => 'Emerald:',
+                                'R:' => 'Ruby:',
+                                'CS:' => 'Colorstones:',
+                                'S:' => 'Sapphire:',
+                                'D:' => 'Diamond:',
+                            ];
+
+                            // Replace specified abbreviations
+                            $description2 = str_replace(array_keys($replacements), array_values($replacements), $product->long_description2);
+
+                            // Replace any other two-letter abbreviation followed by a colon with "Colorstones:"
+                            $description2 = preg_replace('/\b[A-Z]{2}:/', 'Colorstones:', $description2);
+
+                            // Convert newlines to HTML line breaks for proper formatting
+                            $description2 = nl2br(e($description2));
+
+                        @endphp
+                        <div>{!! $description2 !!}</div>
+                    @endif
+                    @if(!blank($product->long_description3))
+                    @php
+                        // Define replacements
+                        $replacements = [
+                            'E:' => 'Emerald:',
+                            'R:' => 'Ruby:',
+                            'CS:' => 'Colorstones:',
+                            'S:' => 'Sapphire:',
+                            'D:' => 'Diamond:',
+                        ];
+
+                        // Replace specified abbreviations
+                        $description3 = str_replace(array_keys($replacements), array_values($replacements), $product->long_description3);
+
+                        // Replace any other two-letter abbreviation followed by a colon with "Colorstones:"
+                        $description3 = preg_replace('/\b[A-Z]{2}:/', 'Colorstones:', $description3);
+
+                        // Convert newlines to HTML line breaks for proper formatting
+                        $description3 = nl2br(e($description3));
+
+                    @endphp
+                    <div>{!! $description3 !!}</div>
+                    @endif
+                    @if(!blank($product->category) && 1==2)
+                        <div class="product_metal_type"><strong>Category</strong> : {{$product->categories->name}}</div>
+                    @endif
+                    @if(!blank($product->collection))
+                        <div class="product_metal_type"><strong>Collection</strong> : {{$product->collections->name}}</div>
+                    @endif
+                    @if(!blank($product->mainstone) && 1==2)
+                        <div class="product_metal_type"><strong>Stone Type</strong> : {{$product->mainstone}}</div>
+                    @endif
+                    @if(!blank($product->metal_type)&& 1==2)
+                        <div class="product_metal_type"><strong>Metal Type</strong> : {{$product->metal_type}}</div>
+                    @endif
+                </div>
+                @if (auth()->user())
+                    <?php $wishlist_link = route('add_to_wishlist',$product->id); ?>
+                @else
+                    <?php $wishlist_link = route('login'); ?>
+                @endif
+                <div class="artha-product-list-btn-outer">
+                    <a href="{{$wishlist_link}}" class="artha-product-list-btn">Add to wishlist</a>
+                </div>
+                
+                
+                <div class="detail_socialmedia">
+                    <a href="https://www.instagram.com/artha.jewelry/" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection

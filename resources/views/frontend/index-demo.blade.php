@@ -1,0 +1,382 @@
+@extends('frontend.layouts.app')
+
+
+
+@section('content')
+
+     
+
+    <section class="artha-banner-outer-main">
+
+        <div class="artha-banner-outer">
+
+            <div class="container-fluid p-0">
+
+                <div class="">
+
+                    <div class="artha-banner-inner">
+
+                        <img src="{{URL::asset('public/assets/images/home-banner/banner-gray-01.jpg')}}" class="w-100">
+
+                        <div id="artha-banner-slider-1" class="owl-carousel owl-theme d-none">
+
+                            @if(!blank($banners))
+
+                                @foreach ($banners as $item)
+
+                                    <?php
+
+                                        if (substr($item->image, 0, 7) == "http://" || substr($item->image, 0, 8) == "https://") {
+
+                                            $banner_image = $item->image;
+
+                                        }else{
+
+                                            $banner_image = URL::asset('banners/'.$item->image);
+
+                                        }
+
+                                    ?>
+
+                                    <div class="item">
+
+                                        <img src="{{$banner_image}}" class="img-fluid">
+
+                                    </div>
+
+                                @endforeach
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="artha-collection-content-main">
+
+        <div class="artha-collection-content">
+
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="artha-title-div">
+
+                        <h2>Artistry in Every Piece</h2>
+
+                        <p>Celebrate Your Unique Style with Our Handmade Jewelry Collection.</p>
+
+                        <div class="artha-subtitle-div">
+
+                        <h3><a href="{{ env('APP_URL') }}/shop">Discover</a></h3>
+
+                        </div>
+
+                    </div>
+
+                    <div class="artha-product-list">
+
+                        <div id="artha-collection-slider" class="owl-carousel owl-theme">
+
+
+
+                            @foreach($collections as $key=>$collection)
+
+                                @if(isset($collection->productDetail))
+
+                                    @php
+
+                                        $product = $collection->productDetail;
+
+                                    @endphp
+
+                                    @php
+
+                                        $product_image = '';
+
+                                        if($product->image_type == 1){
+
+                                            $product_image = URL::asset('products/'.$product->image);
+
+                                        } else {
+
+                                            if (substr($product->image, 0, 7) == "http://" || substr($product->image, 0, 8) == "https://") {
+
+                                                $product_image = $product->image;
+
+                                            }
+
+                                        }
+
+                                    @endphp
+
+
+
+                                    @if(!empty($product_image))
+
+                                        <div class="item">
+
+                                            <div class="artha-product-list-div">
+
+                                                <div class="artha-product-list-img">
+
+                                                    <img src="{{ $product_image }}" alt="{{ $product->name }}" class="img-fluid">
+
+                                                    <div class="artha-product-list-img-life">
+
+                                                        <a href="#">
+
+                                                            <i class="far fa-heart"></i>
+
+                                                        </a>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="artha-product-list-content">
+
+                                                    <h3>{{ $product->name }}</h3>
+
+                                                    <p>{{ $product->description }}</p>
+
+                                                    <div class="artha-product-list-price">
+
+                                                        <span>€ {{ number_format($product->price, 2) }}</span>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="artha-product-list-btn-outer">
+
+                                                    <a href="{{route('product.details',$product->sku)}}" class="artha-product-list-btn">Discover</a>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    @endif
+
+                                @endif
+
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="artha-collection-banner-content-main">
+
+        <div class="artha-collection-banner-content">
+
+            <div class="container">
+
+                <div class="row">
+
+                    
+
+                    <img src="{{URL::asset('public/assets/images/home-banner/banner-gray-02.jpg')}}" class="w-100">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="container artha-title-div-outer">
+
+            <div class="row">
+
+                <div class="col-xl-11 artha-title-div">
+
+                    <h2>Experience the unparalleled brilliance of our exquisite diamond jewelry, designed to shine as bright as your love.</h2>
+
+                    <div class="artha-subtitle-div">
+
+                    <h3><a href="{{ env('APP_URL') }}/Glamour">Discover</a></h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    {{-- <section class="artha-collection-card-main">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="artha-collection-card-main-inner">
+
+                    <div class="artha-collection-card-main-img-content">
+
+                        <img src="{{url('/')}}/front/images/fine-jewelry-home-page.jpg">
+
+                        <div class="artha-collection-card-main-content">
+
+                            <div class="artha-title-div">
+
+                                <h2>Lorem Ipsum is simply dummy text</h2>
+
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+
+                                    been the industry'</p>
+
+                                <div class="artha-subtitle-div">
+
+                                    <h3>Discover the collection</h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="artha-collection-card-main-img-content">
+
+                        <img src="{{url('/')}}/front/images/victorian-jewelry-home-page.jpg">
+
+                        <div class="artha-collection-card-main-content">
+
+                            <div class="artha-title-div">
+
+                                <h2>Lorem Ipsum is simply dummy text</h2>
+
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+
+                                    been the industry'</p>
+
+                                <div class="artha-subtitle-div">
+
+                                    <h3>Discover the collection</h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section> --}}
+
+
+
+    <section class="artha-collection-banner-content-main">
+
+        <div class="artha-collection-banner-content">
+
+            <div class="container">
+
+                <div class="row">
+
+                    
+
+                    <img src="{{URL::asset('public/assets/images/home-banner/banner-gray-03.jpg')}}" class="w-100">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="container artha-title-div-outer">
+
+            <div class="row">
+
+                <div class="col-xl-11 artha-title-div">
+
+                    <h2>Radiate elegance with our unique, handcrafted diamond jewelry that tells your story.</h2>
+
+                    <div class="artha-subtitle-div">
+
+                    <h3><a href="{{ env('APP_URL') }}/shop">Discover</a></h3>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="artha-newletter-main">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="artha-newletter-inner">
+
+                    <h2>SUBSCRIBE TO OUR NEWSLETTER</h2>
+
+                    <form action="{{route('newsletter')}}" method="post">
+
+                        @csrf
+
+                        <div class="artha-newsletter-form">
+
+                            <input type="email" name="email" value="{{old('email')}}" placeholder="Email">
+
+                            @if ($errors->has('email'))
+
+                                <p class="text-danger">{{ $errors->first('email') }}</p>
+
+                            @endif
+
+                            <button type="submit" class="artha-product-list-btn">SUBSCRIBE</button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+@endsection
+
+
+

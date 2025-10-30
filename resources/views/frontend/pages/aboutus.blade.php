@@ -1,0 +1,89 @@
+@extends('frontend.layouts.app')
+
+@section('content')
+<div class="aboutus">
+<div
+      class="Container"
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      "
+    >
+      <div class="ImageSection" style="width: 68%">
+        <img
+          src="https://arthajewels.com/front/images/about-banner.jpg"
+          alt=""
+          style="height: 65vh; width: 45vw; object-fit: cover"
+        />
+      </div>
+      <!--<div class="VerticalLineSection" style="width: 20%">
+        <div
+          class="Line"
+          style="background-color: #d4a258; height: 100vh; width: 10vw"
+        ></div>
+      </div>-->
+      <div
+        class="ContentSection"
+        style="
+          background-color: white;
+          padding: 25px 35px;
+          box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.141);
+          margin-left: -30%;
+          width: 40%;
+        "
+      >
+        <p
+          class="Title"
+          style="
+            color: #9d723e;
+            font-size: 40px;
+            margin-top: 5px;
+            font-family: Brilliant Cut Pro;
+          "
+        >
+          About Us
+        </p>
+        <p
+          style="
+            font-size: 16px;
+            margin-top: 15px;
+          "
+        >
+        Artha Jewelry is a manufacturing and wholesaler jewellery company based in Europe, with Indian roots, which has combined both Eastern and Western styles, to create a concept that encompasses any form, from the most basic and simple, to the very special and luxurious.
+        </p>
+        <p
+          style="
+            font-size: 16px;
+            margin-top: 15px;
+          "
+        >
+        With large, medium and small customers, our mission is to go along with each one in their enterprise and be the ideal suppliers according to each of their needs and requirements, always emphasizing the professionalism and importance of each one.
+        </p>
+        <p
+          style="
+            font-size: 16px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+          "
+        >
+        Our factory located in India, have a large manufacturing capacity, and our offices are located in Madrid, Hongkong, Mumbai, Bangkok, New York and Dubai which allows us to produce jewellery according to our customer’s demands, as well as the management of a fairly large inventory and the creation of collections at any scale, with quite competitive prices in the industry.
+        </p>
+      </div>
+    </div>
+</div>
+@endsection
+@section('script')
+    <script>
+        $('#reload').click(function () {
+            $.ajax({
+                type: 'GET',
+                url: '{{route("reload-captcha")}}',
+                success: function (data) {
+                    $(".captcha span").html(data.captcha);
+                }
+            });
+        });
+    </script>
+@endsection

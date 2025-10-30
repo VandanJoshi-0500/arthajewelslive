@@ -1,0 +1,78 @@
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 footer-first footer-div-title">
+                <h3>CUSTOMER CARE</h3>
+                <ul class="footer-menu">
+                    
+                    <li>Call Us: <a href="tel:+34910590197">+34 910590197</a></li>
+                    <li>Email: <a class="Emailcontactus" href="https://mail.google.com/mail/u/0/?fs=1&to=sales@arthajewels.com&tf=cm" target="_blank">sales@arthajewels.com</a></li>
+                 
+                </ul>
+            </div>
+            <div class="col-xl-3 footer-first footer-div-title">
+                <h3>Quick Links</h3>
+                <ul class="footer-menu">
+                    <li><a href="{{route('home')}}">Home</a></li>
+                    <li><a href="{{url('/')}}/aboutus">About US</a></li>
+                    <!-- <li><a href="{{url('/')}}/contactus">Contact Us</a></li> -->
+                    <li><a href="{{url('/')}}/request-catalog">Request Catalog</a></li>
+                    <!--<li><a href="{{url('/')}}/login">Login</a></li>-->
+                    <!--<li><a href="{{url('/')}}/MyWishlist">WishList</a></li>-->
+                </ul>
+            </div>
+            <div class="col-xl-3 footer-first footer-div-title">
+                <h3>Legal Area</h3>
+                <ul class="footer-menu">
+                    <li><a href="{{url('/')}}/terms-of-use">Terms of use</a></li>
+                    <li><a href="{{url('/')}}/privacy-policy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-xl-3 footer-first footer-div-title">
+                <h3>Follow Us</h3>
+                <ul class="footer-social-menu">
+                    <li><a href="https://www.instagram.com/artha.jewelry/" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="https://wa.me/34640115836" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="footer-copy-right-outer">
+    <p>@ Artha Jewelry/Artha Jewels - <?php echo date("Y"); ?> All Rights Reserved</p>
+</div>
+
+</body>
+<script src="{{url('/')}}/front/js/jquery.min.js"></script>
+
+
+<script>
+       
+ $('.dropdowns i.fa-angle-right').on('click', function(event) {
+      // Prevent default link behavior
+  console.log("sahvdhsav");
+  
+      // Add the 'is-active' class to the closest parent <li> element
+      $(this).closest('li').addClass('is-active');
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/2.1.0/jquery.imagesloaded.min.js"></script>
+<script src="{{url('/')}}/front/js/bootstrap.bundle.min.js"></script>
+<script src="{{url('/')}}/front/js/owl.carousel.min.js"></script>
+<script src="{{url('/')}}/front/js/custom.js"></script>
+<script src="{{url('/')}}/assets1/sweetalert/sweetalert.min.js"></script>
+
+@if(Session::has('subscribe'))
+    <script>
+        Swal.fire('success',"{{Session::get('subscribe') }}",'success');
+    </script>
+@endif
+@if(Session::has('submitted'))
+    <script>
+        Swal.fire('success',"{{Session::get('submitted') }}",'success');
+    </script>
+@endif
+@yield('script')
+
+</html>
